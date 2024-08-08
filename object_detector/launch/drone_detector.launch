@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Launch the USB camera node -->
+    <node pkg="usb_cam" type="usb_cam_node" name="usb_cam">
+        <param name="video_device" value="/dev/video2"/> <!-- /dev/video0 for the real drone -->
+        <param name="image_width" value="640"/>
+        <param name="image_height" value="480"/>
+        <param name="pixel_format" value="yuyv"/>
+        <param name="framerate" value="20"/>
+    </node>
+
+    <!-- Launch the ArUco detector node -->
+    <node name="aruco_detector" pkg="object_detector" type="aruco_corners.py" output="screen">
+        <param name="desired_aruco_dictionary" value="DICT_4X4_1000" />
+        <remap from="/quad_f450_camera/camera_link/raw_image" to="/usb_cam/image_raw" />
+    </node>
+
+    <!-- Launch the cent_calculator node -->
+   <node pkg="object_detector" type="cent_calculator" name="data_calculation">
+    </node>
+    <!-- Launch the kalman_filter node -->
+    <node pkg="object_detector" type="kalman_filter" name="KF_predictor">
+    </node>
+
+</launch>
